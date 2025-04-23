@@ -1,0 +1,28 @@
+body {
+  font-family: var(--font-manrope), sans-serif;
+  @apply bg-bg;
+}
+
+label {
+  @apply text-sm capitalize;
+
+  &.required::after {
+    content: "*";
+    @apply text-error;
+  }
+}
+
+button {
+  &.primary {
+    @apply capitalize py-2 px-4 bg-pri rounded-lg text-white font-medium;
+  }
+  &.secondary {
+    @apply capitalize py-2 px-4 rounded-lg font-medium border border-gray-b;
+  }
+
+  @apply cursor-pointer;
+}
+
+.card-container {
+  @apply bg-card border border-border rounded-lg p-4;
+}
