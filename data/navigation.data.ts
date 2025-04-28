@@ -12,8 +12,8 @@ export const navigation = [
     Icon: Tasks,
   },
   {
-    name: "Projects",
-    href: "/projects",
+    name: "Schedules",
+    href: "/schedules",
     Icon: Bag,
   },
   {

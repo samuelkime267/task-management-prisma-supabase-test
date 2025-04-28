@@ -5,7 +5,8 @@ import React from "react";
 import { cn } from "@/utils";
 import { UseFormRegister } from "react-hook-form";
 
-interface inputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface textareaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   containerClassName?: string;
   error?: string;
   success?: boolean;
@@ -16,11 +17,9 @@ interface inputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   valueAsNumber?: boolean;
   children?: React.ReactNode;
   hideLabel?: boolean;
-  iClass?: string;
-  noBorder?: boolean;
 }
 
-export default function Input({
+export default function TextArea({
   label,
   required,
   labelText,
@@ -32,10 +31,8 @@ export default function Input({
   valueAsNumber,
   children,
   hideLabel,
-  iClass,
-  noBorder,
   ...props
-}: inputProps) {
+}: textareaProps) {
   const registration =
     (register &&
       register((name as string) || (label as string), {
@@ -54,17 +51,14 @@ export default function Input({
 
       <div
         className={cn(
-          "border border-gray-b rounded-lg focus-within:border-pri duration-300 transition-colors flex items-center justify-center gap-2 p-2",
+          "border border-gray-b rounded-lg focus-within:border-pri duration-300 transition-colors flex items-center justify-center gap-2 p-2 h-32",
           inputClass,
-          {
-            "border-error": error,
-            "border-none focus-within:border-transparent p-0": noBorder,
-          }
+          { "border-error": error }
         )}
       >
         {children}
-        <input
-          className={cn("border-none outline-none w-full", iClass)}
+        <textarea
+          className="border-none outline-none  w-full h-full resize-none"
           id={label}
           name={name || label}
           {...registration}

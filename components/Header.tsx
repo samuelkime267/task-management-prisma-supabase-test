@@ -1,24 +1,21 @@
 import React from "react";
-import Image from "next/image";
-import defaultProfilePic from "@/assets/imgs/user.png";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { Bell, Search } from "./icons";
 import Button from "./Button";
 import Input from "./Input";
-import { AddTask } from "@/features/tasks/components";
+import AddTask from "@/features/tasks/components/AddTask";
+import Image from "next/image";
+import defaultProfilePic from "@/assets/imgs/user.png";
+import getAuth from "@/lib/getAuth";
 
 export default async function Header() {
-  const session = await auth();
-  if (!session || !session.user) redirect("/login");
-  const { name, image } = session.user;
+  const { name, image, id } = await getAuth();
 
   return (
     <header className="flex items-center justify-between mb-8">
       <div className="flex items-center justify-start gap-2">
         <Image
           src={image || defaultProfilePic}
-          alt={name || ""}
+          alt={name}
           width={56}
           height={56}
           className="size-14 rounded-full bg-gray-300"
@@ -44,7 +41,7 @@ export default async function Header() {
           <Bell className="size-6" />
         </Button>
 
-        <AddTask />
+        <AddTask userId={id} />
       </div>
     </header>
   );

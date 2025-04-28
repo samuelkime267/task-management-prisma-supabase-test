@@ -1,13 +1,11 @@
 import React from "react";
 import { getStats } from "@/DAI/tasks";
-import { auth } from "@/auth";
 import SomethingWentWrong from "./SomethingWentWrong";
-import { redirect } from "next/navigation";
+import getAuth from "@/lib/getAuth";
 
 export default async function Review() {
-  const session = await auth();
-  if (!session || !session.user || !session.user.id) redirect("/login");
-  const stats = await getStats(session.user.id);
+  const { id } = await getAuth();
+  const stats = await getStats(id);
   if (!stats) return <SomethingWentWrong />;
 
   const { activeTasks, overDueTasks, tasksDueToday } = stats;

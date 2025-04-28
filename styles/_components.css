@@ -14,10 +14,10 @@ label {
 
 button {
   &.primary {
-    @apply capitalize py-2 px-4 bg-pri rounded-lg text-white font-medium;
+    @apply capitalize py-2 px-4 bg-pri rounded-lg text-white font-medium flex items-center justify-center gap-2;
   }
   &.secondary {
-    @apply capitalize py-2 px-4 rounded-lg font-medium border border-gray-b;
+    @apply capitalize py-2 px-4 rounded-lg font-medium border border-gray-b shadow shadow-border flex items-center justify-center gap-2;
   }
 
   @apply cursor-pointer;

@@ -11,7 +11,7 @@ export default function Sidebar() {
   const path = usePathname();
 
   return (
-    <div className="p-4 h-[calc(100vh-2rem)] flex flex-col items-start justify-start gap-8 w-2xs bg-card rounded-lg border border-border">
+    <div className="sticky top-4 left-0 p-4 h-[calc(100vh-2rem)] flex flex-col items-start justify-start gap-8 w-2xs bg-card rounded-lg border border-border">
       <Link href="/" className="flex items-center justify-center gap-2">
         <Logo className="size-10" />
         <p className="text-xl font-bold">FlowForge</p>

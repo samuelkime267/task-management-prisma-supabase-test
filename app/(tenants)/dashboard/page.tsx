@@ -1,8 +1,8 @@
 import React from "react";
 import { auth } from "@/auth";
 import ActionSignout from "@/components/ActionSignout";
-import { Review } from "@/components";
-import { TodaysTask } from "@/features/tasks/components";
+import Review from "@/components/Review";
+import TodaysTask from "@/features/tasks/components/TodaysTask";
 
 export default async function Dashboard() {
   const session = await auth();
@@ -12,7 +12,7 @@ export default async function Dashboard() {
       <TodaysTask />
 
       <h1>Dashboard</h1>
-      <p>{JSON.stringify(session)}</p>
+      <p className="wrap-anywhere">{JSON.stringify(session)}</p>
 
       <ActionSignout />
     </main>

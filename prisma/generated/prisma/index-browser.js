@@ -143,10 +143,12 @@ exports.Prisma.UserScalarFieldEnum = {
 
 exports.Prisma.TasksScalarFieldEnum = {
   id: 'id',
-  title: 'title',
-  Description: 'Description',
+  name: 'name',
+  description: 'description',
   status: 'status',
-  dueAt: 'dueAt',
+  priority: 'priority',
+  startDate: 'startDate',
+  dueDate: 'dueDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   authorId: 'authorId'
@@ -154,8 +156,7 @@ exports.Prisma.TasksScalarFieldEnum = {
 
 exports.Prisma.SubTaskScalarFieldEnum = {
   id: 'id',
-  Title: 'Title',
-  Description: 'Description',
+  name: 'name',
   isCompleted: 'isCompleted',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -177,9 +178,15 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 exports.TaskStatus = exports.$Enums.TaskStatus = {
-  Todo: 'Todo',
-  InProgress: 'InProgress',
-  Done: 'Done'
+  TODO: 'TODO',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DONE: 'DONE'
+};
+
+exports.TaskPriority = exports.$Enums.TaskPriority = {
+  HIGHEST: 'HIGHEST',
+  MEDIUM: 'MEDIUM',
+  LOW: 'LOW'
 };
 
 exports.Prisma.ModelName = {
