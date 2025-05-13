@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { Button } from "@/components";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { signIn } from "next-auth/react";
 import { defaultRedirectUrl } from "@/data/routes.data";
+import Button from "@/components/Button";
 
 export default function GoogleGithub() {
   return (

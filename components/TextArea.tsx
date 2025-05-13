@@ -51,14 +51,14 @@ export default function TextArea({
 
       <div
         className={cn(
-          "border border-gray-b rounded-lg focus-within:border-pri duration-300 transition-colors flex items-center justify-center gap-2 p-2 h-32",
+          "border border-input shadow-xs rounded-lg focus-within:border-pri duration-300 transition-colors flex items-center justify-center gap-2 p-2 h-32",
           inputClass,
           { "border-error": error }
         )}
       >
         {children}
         <textarea
-          className="border-none outline-none  w-full h-full resize-none"
+          className="border-none outline-none  w-full h-full resize-none text-sm"
           id={label}
           name={name || label}
           {...registration}

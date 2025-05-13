@@ -1,13 +1,15 @@
 "use client";
 
 import React, { startTransition, useRef } from "react";
-import { Input, Button, Form } from "@/components";
 import { useActionState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { registerSchema } from "../schemas";
 import { registerAction } from "../actions";
 import { z } from "zod";
+import Input from "@/components/Input";
+import Button from "@/components/Button";
+import Form from "@/components/Form";
 
 type registrationFormType = z.infer<typeof registerSchema>;
 
@@ -32,7 +34,7 @@ export default function RegistrationForm() {
   };
 
   return (
-    <Form ref={formRef} onSubmit={submit} action={action} error={data?.error}>
+    <Form ref={formRef} onSubmit={submit} error={data?.error}>
       <Input
         label="name"
         required

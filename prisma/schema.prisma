@@ -36,16 +36,33 @@ model Account {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map("email_verified")
+  email         String?       @unique
+  emailVerified DateTime?     @map("email_verified")
   image         String?
   password      String?
   accounts      Account[]
-  tasks         Tasks[]
+  tasks         Task[]
+  projects      Project[]
+  timeTracks    TimeTracked[]
 
   @@map("users")
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  category    String
+  startDate   DateTime?
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now())
+  tasks       Task[]
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
 }
 
 enum TaskStatus {
@@ -60,20 +77,24 @@ enum TaskPriority {
   LOW
 }
 
-model Tasks {
-  id          String       @id @default(cuid())
-  name        String
-  description String?
-  subTasks    SubTask[]
-  status      TaskStatus   @default(TODO)
-  priority    TaskPriority @default(LOW)
-  startDate   DateTime?
-  dueDate     DateTime?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @default(now())
+model Task {
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  subTasks     SubTask[]
+  status       TaskStatus    @default(TODO)
+  priority     TaskPriority  @default(LOW)
+  startDate    DateTime?
+  dueDate      DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now())
+  timesTracked TimeTracked[]
 
   authorId String
   author   User   @relation(fields: [authorId], references: [id])
+
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id])
 }
 
 model SubTask {
@@ -84,5 +105,19 @@ model SubTask {
   updatedAt   DateTime @default(now())
 
   taskId String
-  author Tasks  @relation(fields: [taskId], references: [id])
+  author Task   @relation(fields: [taskId], references: [id])
+}
+
+model TimeTracked {
+  id         String   @id @default(cuid())
+  duration   Int
+  dayTracked DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id])
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
 }

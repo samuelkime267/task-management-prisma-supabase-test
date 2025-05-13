@@ -7,8 +7,13 @@ export const navigation = [
     Icon: Dashboard,
   },
   {
+    name: "Projects",
+    href: "/projects",
+    Icon: Tasks,
+  },
+  {
     name: "Tasks",
-    href: "/task",
+    href: "/tasks",
     Icon: Tasks,
   },
   {

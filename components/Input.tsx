@@ -54,17 +54,18 @@ export default function Input({
 
       <div
         className={cn(
-          "border border-gray-b rounded-lg focus-within:border-pri duration-300 transition-colors flex items-center justify-center gap-2 p-2",
+          "border border-input rounded-md focus-within:border-pri duration-300 transition-colors flex items-center justify-center gap-2 px-2 py-1.5 shadow-xs",
           inputClass,
           {
             "border-error": error,
-            "border-none focus-within:border-transparent p-0": noBorder,
+            "border-none focus-within:border-transparent p-0 shadow-none":
+              noBorder,
           }
         )}
       >
         {children}
         <input
-          className={cn("border-none outline-none w-full", iClass)}
+          className={cn("border-none outline-none w-full text-sm", iClass)}
           id={label}
           name={name || label}
           {...registration}

@@ -1,140 +1,67 @@
 "use client";
 
-import React, {
-  useRef,
-  useEffect,
-  useState,
-  useActionState,
-  startTransition,
-} from "react";
+import React, { useRef } from "react";
 import Form from "@/components/Form";
 import Input from "@/components/Input";
 import TextArea from "@/components/TextArea";
-import { Check, Plus } from "@/components/icons";
 import Button from "@/components/Button";
-import CancelTaskModal from "./CancelTaskModal";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { taskSchema, subTasksSchema, subTaskSchema } from "../schemas";
-import { z } from "zod";
-import { cn } from "@/utils";
-import { createTaskAction } from "../actions";
 import Select from "@/components/Select";
 import { statusSelectData, prioritySelectData } from "../data/tasks.data";
 import { TaskPriority, TaskStatus } from "@/prisma/generated/prisma";
-import TaskActionLoader from "./TaskActionLoader";
+import TaskActionModal from "./TaskActionModal";
+import SubTaskFormSection from "./SubTaskFormSection";
+import useHandleAddTaskForm from "../hooks/useHandleAddTaskForm";
 
 type AddTaskFormProps = {
-  closeDialog: () => void;
-  isCancelModalOpen: boolean;
-  openCancelModal: () => void;
-  closeCancelModal: () => void;
+  closeAddTaskModal: () => void;
+  isActionModalOpen: boolean;
+  openActionModal: () => void;
+  closeActionModal: () => void;
+  isActionCancel: boolean;
+  setModalTypeAsCancel: () => void;
+  removeModalTypeAsCancel: () => void;
   userId: string;
 };
 
-type taskFormType = z.infer<typeof taskSchema>;
-type subTasksType = z.infer<typeof subTasksSchema>;
-type subTaskType = z.infer<typeof subTaskSchema>;
-
 export default function AddTaskForm({
-  closeDialog,
-  closeCancelModal,
-  isCancelModalOpen,
-  openCancelModal,
+  closeAddTaskModal,
   userId,
+  closeActionModal,
+  isActionModalOpen,
+  openActionModal,
+  isActionCancel,
+  removeModalTypeAsCancel,
+  setModalTypeAsCancel,
 }: AddTaskFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
-  const [subTasks, setSubTasks] = useState<subTasksType>([]);
-  const [data, action, isPending] = useActionState(createTaskAction, undefined);
-
   const {
-    formState: { errors },
-    handleSubmit,
+    data,
+    deleteTask,
+    errors,
+    handleCancelBtnClick,
+    handleCreateSubTaskFormSubmit,
+    handleSaveTaskBtnClick,
+    handleSubTaskInputChange,
+    isPending,
     register,
+    subTasks,
+    submit,
+    updateSubTask,
+    submitForm,
     setValue,
-  } = useForm<taskFormType>({
-    // @ts-expect-error  Schema is defined properly but for some reason still get error but it works 😂😂
-    resolver: zodResolver(taskSchema),
-  });
-
-  const createSubTask = (subtask: subTaskType) => {
-    setSubTasks((prevTasks) => [...prevTasks, subtask]);
-  };
-  const updateSubTask = (subtask: subTaskType) => {
-    setSubTasks((prevTasks) =>
-      prevTasks.map((task) => (task.taskId === subtask.taskId ? subtask : task))
-    );
-  };
-
-  const handleCreateSubTaskFormSubmit = (
-    e: React.FormEvent<HTMLFormElement>
-  ) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
-    if (!data.subtask || data.subtask === "") return;
-    const updateValue = {
-      isCompleted: false,
-      name: data.subtask as string,
-      taskId: `${Math.trunc(
-        subTasks.length + 1 * Math.random() + Math.random() * 100
-      )}-${subTasks.length + 2}`,
-    };
-    const parsedData = subTaskSchema.safeParse(updateValue);
-    if (!parsedData.success) return;
-
-    createSubTask(parsedData.data);
-    e.currentTarget.reset();
-  };
-
-  const deleteTask = (taskId: string) => {
-    setSubTasks((prevTasks) =>
-      prevTasks.filter((task) => task.taskId !== taskId)
-    );
-  };
-
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    handleSubmit((data) => {
-      startTransition(() => action(data));
-    })(e);
-  };
-
-  const handleSubTaskInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    id: string
-  ) => {
-    const value = e.target.value;
-
-    setSubTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        const isChangedTask = task.taskId === id;
-        const updatedValue = { ...task, name: value };
-        return isChangedTask ? updatedValue : task;
-      })
-    );
-  };
-
-  useEffect(() => {
-    setValue("authorId", userId);
-  }, [setValue, userId]);
-  useEffect(() => {
-    setValue("subTask", subTasks);
-  }, [setValue, subTasks]);
+  } = useHandleAddTaskForm(
+    { openActionModal, removeModalTypeAsCancel, setModalTypeAsCancel, userId },
+    formRef
+  );
 
   return (
     <div className="grid grid-cols-1 gap-6">
-      <Form
-        ref={formRef}
-        onSubmit={submit}
-        error={data?.error}
-        success={data?.success}
-      >
+      <Form ref={formRef} onSubmit={submit} hideError>
         <Input
           label="name"
           hideLabel
           placeholder="Task Name"
-          iClass="text-3xl font-bold capitalize"
+          iClass="text-3xl font-semibold"
           noBorder
           register={register}
           error={errors.name?.message}
@@ -194,75 +121,21 @@ export default function AddTaskForm({
         />
       </Form>
 
-      <div className="w-full">
-        <h5 className="mb-2.5 font-semibold">Sub task</h5>
-        <div className="grid grid-cols-1 w-full divide-black">
-          {subTasks.map(({ isCompleted, name, taskId }, i) => (
-            <div
-              key={i}
-              className="flex items-center justify-start gap-2 group py-1 border-y hover:border-y-border border-y-transparent"
-            >
-              <Button
-                disabled={isPending}
-                onClick={() =>
-                  updateSubTask({ isCompleted: !isCompleted, name, taskId })
-                }
-              >
-                {isCompleted ? (
-                  <Check className="size-5 text-success" />
-                ) : (
-                  <div className="size-5 border border-border rounded-full" />
-                )}
-              </Button>
-              <Input
-                value={name}
-                iClass={cn("text-gray", {
-                  "line-through": isCompleted,
-                })}
-                noBorder
-                disabled={isPending}
-                inputClass="p-0"
-                className="w-full"
-                onChange={(e) => handleSubTaskInputChange(e, taskId)}
-              />
-
-              <Button
-                onClick={() => deleteTask(taskId)}
-                disabled={isPending}
-                btnType="secondary"
-                className="!p-1 !rounded-full group-hover:opacity-100 opacity-0"
-              >
-                <Plus className="size-5 rotate-45" />
-              </Button>
-            </div>
-          ))}
-
-          <div className="flex items-center justify-start gap-2 w-full">
-            <Plus className="size-6" />
-            <Form
-              containerClass="w-full"
-              hideError
-              error={"testing"}
-              onSubmit={handleCreateSubTaskFormSubmit}
-            >
-              <Input
-                placeholder="Add Subtask"
-                label="subtask"
-                hideLabel
-                noBorder
-                disabled={isPending}
-              />
-            </Form>
-          </div>
-        </div>
-      </div>
+      <SubTaskFormSection
+        deleteTask={deleteTask}
+        handleCreateSubTaskFormSubmit={handleCreateSubTaskFormSubmit}
+        handleSubTaskInputChange={handleSubTaskInputChange}
+        isPending={isPending}
+        subTasks={subTasks}
+        updateSubTask={updateSubTask}
+      />
 
       <div className="flex items-center justify-center gap-4">
         <Button
           btnType="secondary"
           className="w-full"
           type="button"
-          onClick={openCancelModal}
+          onClick={handleCancelBtnClick}
           disabled={isPending}
         >
           Cancel
@@ -271,25 +144,21 @@ export default function AddTaskForm({
           btnType="primary"
           className="w-full"
           disabled={isPending}
-          onClick={() => {
-            formRef.current?.requestSubmit();
-            console.log(errors);
-          }}
+          onClick={handleSaveTaskBtnClick}
         >
           Save task
         </Button>
       </div>
 
-      <CancelTaskModal
-        closeCancelModal={closeCancelModal}
-        closeDialog={closeDialog}
-        isCancelModalOpen={isCancelModalOpen}
-      />
-
-      <TaskActionLoader
+      <TaskActionModal
         error={data?.error}
-        success={data?.success || "Task created successfully"}
+        success={data?.success}
         isLoading={isPending}
+        isOpen={isActionModalOpen}
+        closeActionModal={closeActionModal}
+        submitForm={submitForm}
+        cancel={isActionCancel}
+        closeAddTaskModal={closeAddTaskModal}
       />
     </div>
   );

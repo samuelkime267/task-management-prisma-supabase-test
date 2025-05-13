@@ -8,29 +8,42 @@ import AddTaskForm from "./AddTaskForm";
 import { useModal } from "@/utils";
 
 export default function AddTask({ userId }: { userId: string }) {
-  const [isOpen, openDialog, closeDialog] = useModal();
-  const [isCancelModalOpen, openCancelModal, closeCancelModal] = useModal();
+  const [isOpen, openAddTaskModal, closeAddTaskModal] = useModal();
+  const [isActionModalOpen, openActionModal, closeActionModal] = useModal();
+  const [isActionCancel, setModalTypeAsCancel, removeModalTypeAsCancel] =
+    useModal();
+
+  const openCancelActionModal = () => {
+    setModalTypeAsCancel();
+    openActionModal();
+  };
 
   return (
     <div>
-      <Button btnType="primary" className="!gap-1" onClick={openDialog}>
+      <Button btnType="primary" className="!gap-1" onClick={openAddTaskModal}>
         <Plus className="size-6" /> <p>Add task</p>
       </Button>
 
-      <Modal isOpen={isOpen} overlayClick={openCancelModal}>
+      <Modal isOpen={isOpen} overlayClick={openCancelActionModal}>
         <div className="flex items-center justify-between gap-4 mb-6">
-          <h5 className="font-semibold">Your task</h5>
-          <Button className="secondary !px-2 " onClick={openCancelModal}>
+          <h5 className="font-medium">Your task</h5>
+          <Button
+            className="secondary !px-1.5 "
+            onClick={openCancelActionModal}
+          >
             <Plus className="size-6 rotate-45" />
           </Button>
         </div>
 
         <AddTaskForm
-          closeDialog={closeDialog}
-          isCancelModalOpen={isCancelModalOpen}
-          openCancelModal={openCancelModal}
-          closeCancelModal={closeCancelModal}
+          closeAddTaskModal={closeAddTaskModal}
+          removeModalTypeAsCancel={removeModalTypeAsCancel}
+          setModalTypeAsCancel={setModalTypeAsCancel}
+          isActionCancel={isActionCancel}
           userId={userId}
+          closeActionModal={closeActionModal}
+          isActionModalOpen={isActionModalOpen}
+          openActionModal={openActionModal}
         />
       </Modal>
     </div>

@@ -11,6 +11,15 @@ import Check from "./check";
 import Chevron from "./chevron";
 import Warning from "./warning";
 import Loader from "./loader";
+import Create from "./create";
+import Late from "./late";
+import CalendarX from "./calendarX";
+import Play from "./play";
+import Pause from "./pause";
+import Stop from "./stop";
+import Minimize from "./minimize";
+import Maximize from "./maximize";
+import Clock from "./clock";
 
 export {
   Logo,
@@ -26,4 +35,13 @@ export {
   Chevron,
   Warning,
   Loader,
+  Create,
+  Late,
+  CalendarX,
+  Pause,
+  Play,
+  Stop,
+  Minimize,
+  Maximize,
+  Clock,
 };

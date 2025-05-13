@@ -1,6 +1,5 @@
 body {
-  font-family: var(--font-manrope), sans-serif;
-  @apply bg-bg;
+  @apply bg-bg font-geist;
 }
 
 label {
@@ -14,12 +13,22 @@ label {
 
 button {
   &.primary {
-    @apply capitalize py-2 px-4 bg-pri rounded-lg text-white font-medium flex items-center justify-center gap-2;
+    @apply capitalize py-1.5 px-4 bg-pri rounded-lg text-white flex items-center justify-center gap-2;
   }
   &.secondary {
-    @apply capitalize py-2 px-4 rounded-lg font-medium border border-gray-b shadow shadow-border flex items-center justify-center gap-2;
+    @apply capitalize py-1.5 px-4 rounded-lg border border-gray-b shadow shadow-border flex items-center justify-center gap-2;
+  }
+  &.TODO {
+    @apply capitalize py-1 px-2.5 border border-gray bg-gray/20 rounded-lg text-gray font-medium text-xs flex items-center justify-center gap-2;
+  }
+  &.IN_PROGRESS {
+    @apply capitalize py-1 px-2.5 border border-notify bg-notify/20 rounded-lg text-notify font-medium text-xs flex items-center justify-center gap-2;
+  }
+  &.DONE {
+    @apply capitalize py-1 px-2.5 border border-success bg-success/20 rounded-lg text-success font-medium text-xs flex items-center justify-center gap-2;
   }
 
+  outline-style: none !important;
   @apply cursor-pointer;
 }
 

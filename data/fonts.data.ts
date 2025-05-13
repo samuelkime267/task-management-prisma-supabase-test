@@ -1,19 +1,12 @@
-import { Dosis, Manrope } from "next/font/google";
+import { Geist } from "next/font/google";
 
-export const dosis = Dosis({
-  weight: ["400", "500", "600", "700"],
+export const geist = Geist({
+  weight: ["200", "300", "400", "500", "600", "700"],
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-dosis",
+  variable: "--font-geist",
 });
 
-export const manrope = Manrope({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-manrope",
-});
-
-const fonts = `${dosis.variable} ${manrope.variable}`;
+const fonts = `${geist.variable}`;
 
 export { fonts };

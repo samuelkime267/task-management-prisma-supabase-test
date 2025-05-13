@@ -1,7 +1,6 @@
 "use client";
 
 import React, { startTransition, useRef } from "react";
-import { Input, Button, Form } from "@/components";
 import { useActionState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -9,6 +8,9 @@ import { loginSchema } from "../schemas";
 import { loginAction } from "../actions";
 import { z } from "zod";
 import { useSearchParams } from "next/navigation";
+import Form from "@/components/Form";
+import Input from "@/components/Input";
+import Button from "@/components/Button";
 
 type loginFormType = z.infer<typeof loginSchema>;
 

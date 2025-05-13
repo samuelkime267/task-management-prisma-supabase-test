@@ -1,20 +1,21 @@
 import React from "react";
-import { auth } from "@/auth";
-import ActionSignout from "@/components/ActionSignout";
-import Review from "@/components/Review";
+import Review from "@/features/tasks/components/Review";
 import TodaysTask from "@/features/tasks/components/TodaysTask";
+import MyProjects from "@/features/projects/components/MyProjects";
+import StartTimeTracker from "@/features/timer/components/StartTimeTracker";
 
-export default async function Dashboard() {
-  const session = await auth();
+export default function Dashboard() {
   return (
     <main className="card-container grid grid-cols-1 gap-4">
       <Review />
-      <TodaysTask />
+      <div className="grid grid-cols-2 gap-4">
+        <TodaysTask />
+        <MyProjects />
 
-      <h1>Dashboard</h1>
-      <p className="wrap-anywhere">{JSON.stringify(session)}</p>
-
-      <ActionSignout />
+        <p>activities</p>
+        <StartTimeTracker />
+        <p>Schedules</p>
+      </div>
     </main>
   );
 }

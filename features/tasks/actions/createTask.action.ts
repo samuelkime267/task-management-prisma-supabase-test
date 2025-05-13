@@ -2,8 +2,8 @@
 
 import { taskSchema } from "../schemas";
 import db from "@/lib/db";
-import { auth } from "@/auth";
 import { FieldValues } from "react-hook-form";
+import getAuth from "@/lib/getAuth";
 
 export const createTaskAction = async (_: unknown, data: FieldValues) => {
   const parsed = taskSchema.safeParse(data);
@@ -13,29 +13,28 @@ export const createTaskAction = async (_: unknown, data: FieldValues) => {
   const { authorId, name, status, description, dueDate, startDate, subTask } =
     parsed.data;
 
-  const session = await auth();
-  if (!session || !session.user?.id)
-    return { error: "User is not authenticated" };
+  const { id } = await getAuth();
 
-  if (authorId !== session.user.id)
+  if (authorId !== id)
     return { error: "You're not authorized to perform this action" };
 
   try {
-    const createdTask = await db.tasks.create({
-      data: {
-        name,
-        authorId,
-        description,
-        startDate,
-        dueDate,
-        status,
-      },
-    });
+    await db.$transaction(async (tx) => {
+      const createdTask = await tx.task.create({
+        data: {
+          name,
+          authorId,
+          description,
+          startDate,
+          dueDate,
+          status,
+        },
+      });
 
-    if (!subTask) return { success: "Task created successfully" };
-
-    await db.subTask.createMany({
-      data: subTask.map((task) => ({ ...task, taskId: createdTask.id })),
+      if (!subTask) return;
+      tx.subTask.createMany({
+        data: subTask.map((task) => ({ ...task, taskId: createdTask.id })),
+      });
     });
 
     return { success: "Task created successfully" };

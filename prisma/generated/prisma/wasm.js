@@ -141,7 +141,19 @@ exports.Prisma.UserScalarFieldEnum = {
   password: 'password'
 };
 
-exports.Prisma.TasksScalarFieldEnum = {
+exports.Prisma.ProjectScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  category: 'category',
+  startDate: 'startDate',
+  dueDate: 'dueDate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  authorId: 'authorId'
+};
+
+exports.Prisma.TaskScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
@@ -151,7 +163,8 @@ exports.Prisma.TasksScalarFieldEnum = {
   dueDate: 'dueDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
-  authorId: 'authorId'
+  authorId: 'authorId',
+  projectId: 'projectId'
 };
 
 exports.Prisma.SubTaskScalarFieldEnum = {
@@ -161,6 +174,16 @@ exports.Prisma.SubTaskScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   taskId: 'taskId'
+};
+
+exports.Prisma.TimeTrackedScalarFieldEnum = {
+  id: 'id',
+  duration: 'duration',
+  dayTracked: 'dayTracked',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  taskId: 'taskId',
+  authorId: 'authorId'
 };
 
 exports.Prisma.SortOrder = {
@@ -192,8 +215,10 @@ exports.TaskPriority = exports.$Enums.TaskPriority = {
 exports.Prisma.ModelName = {
   Account: 'Account',
   User: 'User',
-  Tasks: 'Tasks',
-  SubTask: 'SubTask'
+  Project: 'Project',
+  Task: 'Task',
+  SubTask: 'SubTask',
+  TimeTracked: 'TimeTracked'
 };
 
 /**
