@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { taskSchema, subTasksSchema, subTaskSchema } from "../schemas";
 import { z } from "zod";
 import { createTaskAction } from "../actions";
+import { usePathname } from "next/navigation";
 
 type useHandleAddTaskFormProps = {
   openActionModal: () => void;
@@ -90,11 +91,13 @@ export default function useHandleAddTaskForm(
     );
   };
 
+  const pathname = usePathname();
+
   const submit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleSubmit((data) => {
       openActionModal();
-      startTransition(() => action(data));
+      startTransition(() => action({ ...data, pathname }));
     })(e);
   };
 

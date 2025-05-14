@@ -1,6 +1,6 @@
 "use client";
 
-import React, { startTransition, useActionState, useEffect } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import Button from "@/components/Button";
 import { cn, getDate, useAppSelector, useAppDispatch } from "@/utils";
 import {
@@ -11,57 +11,69 @@ import {
   Minimize,
   Maximize,
   Plus,
+  Loader,
 } from "@/components/icons";
 import {
   setIsMinimized,
   setShowTimer,
-  setStat,
   setTimer,
-  setStartTime,
-  setPauseTimer,
-  setIsRecorded,
+  setStartSaving,
+  setContinuePlayingTimer,
+  setResetTimer,
+  setTimerRecorded,
 } from "@/store/timer.slice";
 import { formatTime } from "../utils";
 import { saveTime } from "../actions";
 import { toast } from "sonner";
+import { usePathname } from "next/navigation";
 
 let setIntervalId: NodeJS.Timeout;
 
 export default function TimeTracker() {
-  const [dataReturned, action, isPending] = useActionState(saveTime, undefined);
+  const pathname = usePathname();
+  const [error, setError] = useState<string | undefined>();
+  const [success, setSuccess] = useState<string | undefined>();
+  const [isPending, startTransition] = useTransition();
+
+  const resetError = () => {
+    setError(undefined);
+    setSuccess(undefined);
+  };
 
   const { today } = getDate();
   const timerData = useAppSelector((state) => state.timer);
-  const { name, stat, isMinimized, showTimer, timer, startTime, previousTime } =
-    timerData;
+  const {
+    name,
+    stat,
+    isMinimized,
+    showTimer,
+    timer,
+    startTime,
+    previousTime,
+    isSaving,
+    isRecorded,
+  } = timerData;
   const dispatch = useAppDispatch();
 
   const minimizeTimer = () => dispatch(setIsMinimized(true));
   const maximizeTimer = () => dispatch(setIsMinimized(false));
   const closeTimer = () => dispatch(setShowTimer(false));
   const pauseTimer = () => {
-    if (!startTime) return;
-
-    const totalTime = Date.now() - startTime + previousTime;
-    dispatch(
-      setPauseTimer({
-        previousTime: totalTime,
-        stat: "paused",
-        timer: totalTime,
-        startTime: null,
-      })
-    );
     clearInterval(setIntervalId);
+    dispatch(setStartSaving("paused"));
   };
   const stopTimer = () => {
-    pauseTimer();
-    dispatch(setStat("stopped"));
+    clearInterval(setIntervalId);
+
+    if (!isSaving && isRecorded && stat === "paused") {
+      dispatch(setResetTimer());
+      return;
+    }
+
+    dispatch(setStartSaving("stopped"));
   };
   const playTimer = () => {
-    if (stat === "playing") return;
-    dispatch(setStartTime(Date.now()));
-    dispatch(setIsRecorded(false));
-    dispatch(setStat("playing"));
+    dispatch(setContinuePlayingTimer());
   };
 
   useEffect(() => {
@@ -77,36 +89,50 @@ export default function TimeTracker() {
   }, [stat, dispatch, timer, startTime, previousTime]);
 
   useEffect(() => {
-    if (dataReturned?.error) {
-      toast(dataReturned.error);
-    }
-    if (dataReturned?.success) {
-      dispatch(setIsRecorded(true));
-      toast(dataReturned.success);
-    }
-  }, [dataReturned, dispatch]);
-
-  useEffect(() => {
-    if (timerData.stat === "paused") {
-      return;
-    }
-
     if (timerData.isRecorded) return;
 
-    if (timerData.stat === "stopped") {
-      startTransition(() => {
+    if (
+      (timerData.stat === "stopped" || timerData.stat === "paused") &&
+      isSaving &&
+      !isRecorded
+    ) {
+      startTransition(async () => {
         if (!timerData.dayTracked) {
           toast("Day tracked not found");
           return;
         }
-        action({
+        const { error, success } = await saveTime(undefined, {
           ...timerData,
           dayTracked: new Date(timerData.dayTracked),
+          pathname,
         });
+
+        setError(error);
+        setSuccess(success);
       });
       return;
     }
-  }, [timerData, action]);
+  }, [timerData, pathname, isSaving, isRecorded]);
+
+  useEffect(() => {
+    if (!isSaving) return;
+
+    if (error) {
+      toast(error);
+      resetError();
+      return;
+    }
+    if (success) {
+      if (stat === "stopped") {
+        dispatch(setResetTimer());
+        resetError();
+        return;
+      }
+      dispatch(setTimerRecorded());
+      toast(success);
+      resetError();
+    }
+  }, [dispatch, isSaving, stat, error, success]);
 
   const timePassed = formatTime(timer, true);
 
@@ -240,6 +266,12 @@ export default function TimeTracker() {
               </div>
             )}
           </div>
+
+          {isSaving && (
+            <div className="absolute top-0 left-0 w-full h-full bg-card/70 flex items-center justify-center rounded-lg z-20">
+              <Loader className="size-6" />
+            </div>
+          )}
         </div>
       </div>
     )

@@ -182,6 +182,7 @@ exports.Prisma.TimeTrackedScalarFieldEnum = {
   dayTracked: 'dayTracked',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
+  taskName: 'taskName',
   taskId: 'taskId',
   authorId: 'authorId'
 };

@@ -1,10 +1,4 @@
-import { auth } from "@/auth";
-
 export default async function Home() {
-  const session = await auth();
-
-  console.log(session);
-
   return (
     <main>
       <h1>This is a Task management application</h1>

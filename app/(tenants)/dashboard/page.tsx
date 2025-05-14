@@ -3,6 +3,7 @@ import Review from "@/features/tasks/components/Review";
 import TodaysTask from "@/features/tasks/components/TodaysTask";
 import MyProjects from "@/features/projects/components/MyProjects";
 import StartTimeTracker from "@/features/timer/components/StartTimeTracker";
+import TimeTrackedToday from "@/features/timer/components/TimeTrackedToday";
 
 export default function Dashboard() {
   return (
@@ -12,7 +13,7 @@ export default function Dashboard() {
         <TodaysTask />
         <MyProjects />
 
-        <p>activities</p>
+        <TimeTrackedToday />
         <StartTimeTracker />
         <p>Schedules</p>
       </div>

@@ -16,8 +16,6 @@ export default async function StartTimeTracker() {
     option: task.name,
   }));
 
-  console.log(tasks[0], "task eh");
-
   return (
     <div className="card-container">
       <div className="flex items-center justify-between mb-4 border-b border-b-border pb-4 border-dashed w-full">

@@ -7,13 +7,14 @@ type initialStateType = {
   timer: number;
   id: string | null;
   name: string | null;
-  isRecorded: boolean | null;
+  isRecorded: boolean;
   showTimer: boolean;
   stat: stat | null;
   isMinimized: boolean;
   startTime: number | null;
   dateTimePassed: number;
   dayTracked: number | null;
+  isSaving: boolean;
 };
 
 const initialState: initialStateType = {
@@ -22,12 +23,13 @@ const initialState: initialStateType = {
   dateTimePassed: 0,
   id: null,
   name: null,
-  isRecorded: null,
+  isRecorded: false,
   showTimer: false,
   isMinimized: false,
   stat: null,
   startTime: null,
   dayTracked: null,
+  isSaving: false,
 };
 
 const timerSlice = createSlice({
@@ -65,6 +67,8 @@ const timerSlice = createSlice({
         };
       }
     ) {
+      if (state.isSaving) return;
+
       state.id = action.payload.id;
       state.name = action.payload.name;
       state.startTime = action.payload.startTime;
@@ -74,35 +78,55 @@ const timerSlice = createSlice({
       state.dayTracked = action.payload.dayTracked;
       state.previousTime = action.payload.previousTime;
     },
+    setContinuePlayingTimer: (state) => {
+      if (state.stat !== "paused" || state.isSaving || !state.isRecorded)
+        return;
+
+      state.startTime = Date.now();
+      state.isRecorded = false;
+      state.stat = "playing";
+    },
     setResetTimer: (state) => {
       state.timer = initialState.timer;
       state.name = initialState.name;
       state.id = initialState.id;
       state.isRecorded = initialState.isRecorded;
-      state.showTimer = initialState.showTimer;
+      state.showTimer = true;
       state.stat = initialState.stat;
       state.isMinimized = initialState.isMinimized;
       state.startTime = initialState.startTime;
       state.dateTimePassed = initialState.dateTimePassed;
       state.dayTracked = initialState.dayTracked;
       state.previousTime = initialState.previousTime;
+      state.isSaving = initialState.isSaving;
     },
-    setPauseTimer: (
+    setIsSaving: (state, action: { type: string; payload: boolean }) => {
+      state.isSaving = action.payload;
+    },
+    setStartSaving: (
       state,
-      action: {
-        type: string;
-        payload: {
-          startTime: number | null;
-          stat: stat;
-          timer: number;
-          previousTime: number;
-        };
-      }
+      action: { type: string; payload: "stopped" | "paused" }
     ) => {
-      state.stat = action.payload.stat;
-      state.timer = action.payload.timer;
-      state.previousTime = action.payload.previousTime;
-      state.startTime = action.payload.startTime;
+      if (
+        !state.startTime ||
+        state.stat !== "playing" ||
+        state.isSaving ||
+        state.isRecorded
+      )
+        return;
+
+      const totalTime = Date.now() - state.startTime + state.previousTime;
+
+      state.previousTime = totalTime;
+      state.timer = totalTime;
+      state.startTime = null;
+      state.stat = action.payload;
+      state.isSaving = true;
+      state.isRecorded = false;
+    },
+    setTimerRecorded: (state) => {
+      state.isRecorded = true;
+      state.isSaving = false;
     },
     setShowTimer: (state, action: { type: string; payload: boolean }) => {
       state.showTimer = action.payload;
@@ -137,8 +161,11 @@ export const {
   setDateTimePassed,
   setPreviousTime,
   setStartTime,
-  setPauseTimer,
+  setStartSaving,
   setResetTimer,
   setStartTimer,
+  setContinuePlayingTimer,
+  setIsSaving,
+  setTimerRecorded,
 } = timerSlice.actions;
 export default timerSlice.reducer;

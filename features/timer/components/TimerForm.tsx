@@ -7,7 +7,12 @@ import { Clock } from "@/components/icons";
 import { selectDataType } from "@/typings";
 import { toast } from "sonner";
 import { getDate, useAppDispatch, useAppSelector } from "@/utils";
-import { setResetTimer, setStartTimer } from "@/store/timer.slice";
+import {
+  setContinuePlayingTimer,
+  setResetTimer,
+  setStartTimer,
+} from "@/store/timer.slice";
+import { formatTime } from "../utils";
 
 type TimerFormProps = {
   selectTasksData: selectDataType[];
@@ -31,9 +36,16 @@ export default function TimerForm({
 }: TimerFormProps) {
   const [selectedValue, setSelectedValue] = useState("");
   const dispatch = useAppDispatch();
-  const { id, stat, isRecorded, startTime } = useAppSelector(
+  const { id, stat, isRecorded, timer, isSaving } = useAppSelector(
     (state) => state.timer
   );
+
+  const totalTimeTracked = todaysTrackings.reduce(
+    (prev, { duration }) => prev + duration,
+    0
+  );
+
+  const totalTime = formatTime(totalTimeTracked + timer, true);
 
   const { today } = getDate();
 
@@ -56,6 +68,18 @@ export default function TimerForm({
     toast(name + "Timer started");
   };
 
+  const continuePlayingTimer = () => {
+    if (isSaving) {
+      toast.error("Currently saving time tracked please wait.");
+      return;
+    }
+    if (!isRecorded) {
+      toast.error("Please record time tracked before continuing");
+      return;
+    }
+    dispatch(setContinuePlayingTimer());
+  };
+
   const handleStartTimer = () => {
     if (selectedValue === "") {
       toast.error(" Please select a task");
@@ -71,27 +95,51 @@ export default function TimerForm({
       return;
     }
 
-    if (id === selectedTask.value && stat !== "playing") {
-      startTimerNow({ id: selectedTask.value, name: selectedTask.option });
-      return;
-    }
-    if (id === selectedTask.value && stat === "playing") {
-      toast.error("You are currently tracking this task");
+    if (isSaving) {
+      toast.error("Currently saving time tracked please wait.");
       return;
     }
 
-    if (stat === "playing" && id) {
+    if (!id) {
+      startTimerNow({ id: selectedTask.value, name: selectedTask.option });
+      return;
+    }
+
+    if (id === selectedTask.value) {
+      if (stat === "playing") {
+        toast.error("You are currently tracking this task");
+        return;
+      }
+
+      if (stat === "paused") {
+        continuePlayingTimer();
+        return;
+      }
+
+      if (!isRecorded) {
+        toast.error("Please record time tracked before continuing");
+        return;
+      }
+
+      if (stat === "stopped") {
+        startTimerNow({ id: selectedTask.value, name: selectedTask.option });
+        return;
+      }
+    }
+
+    if (stat === "playing") {
       // allow user to stop the timer
       toast.error("You're already tracking a task");
       return;
     }
 
-    if (stat === "paused" && id) {
-      if (isRecorded === null) {
+    if (stat === "paused") {
+      if (!isSaving && isRecorded) {
         startTimerNow({ id: selectedTask.value, name: selectedTask.option });
         return;
       }
-      if (!isRecorded) {
+
+      if (!isRecorded && !isSaving) {
         toast.error(
           "Remember to record time and start a new timer after pausing"
         );
@@ -102,36 +150,17 @@ export default function TimerForm({
       return;
     }
 
-    if (stat === "stopped" && id) {
-      if (isRecorded === null) {
+    if (stat === "stopped") {
+      if (isRecorded) {
         startTimerNow({ id: selectedTask.value, name: selectedTask.option });
         return;
       }
 
-      if (!isRecorded) {
-        toast.error(
-          "Remember to record time and start a new timer after stopping"
-        );
-        return;
-      }
-
-      startTimerNow({ id: selectedTask.value, name: selectedTask.option });
+      toast.error(
+        "Remember to record time and start a new timer after stopping"
+      );
       return;
     }
-
-    if (!id && isRecorded === null && !stat && !startTime) {
-      startTimerNow({ id: selectedTask.value, name: selectedTask.option });
-      return;
-    }
-
-    console.log({
-      id,
-      stat,
-      isRecorded,
-      startTime,
-      selectedValue: selectedTask.value,
-      select: selectedValue,
-    });
 
     toast("Opps! You've caught a bug. How did you get here? 😂😂");
   };
@@ -143,7 +172,7 @@ export default function TimerForm({
         <p className="text-center text-xs">
           {"Time You've spent on task today"}
         </p>
-        <h1 className="text-center">00:00:00</h1>
+        <h1 className="text-center">{totalTime}</h1>
       </div>
       <div>
         <p className="text-center text-xs mb-2">

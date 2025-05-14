@@ -7291,6 +7291,7 @@ export namespace Prisma {
     dayTracked: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    taskName: string | null
     taskId: string | null
     authorId: string | null
   }
@@ -7301,6 +7302,7 @@ export namespace Prisma {
     dayTracked: Date | null
     createdAt: Date | null
     updatedAt: Date | null
+    taskName: string | null
     taskId: string | null
     authorId: string | null
   }
@@ -7311,6 +7313,7 @@ export namespace Prisma {
     dayTracked: number
     createdAt: number
     updatedAt: number
+    taskName: number
     taskId: number
     authorId: number
     _all: number
@@ -7331,6 +7334,7 @@ export namespace Prisma {
     dayTracked?: true
     createdAt?: true
     updatedAt?: true
+    taskName?: true
     taskId?: true
     authorId?: true
   }
@@ -7341,6 +7345,7 @@ export namespace Prisma {
     dayTracked?: true
     createdAt?: true
     updatedAt?: true
+    taskName?: true
     taskId?: true
     authorId?: true
   }
@@ -7351,6 +7356,7 @@ export namespace Prisma {
     dayTracked?: true
     createdAt?: true
     updatedAt?: true
+    taskName?: true
     taskId?: true
     authorId?: true
     _all?: true
@@ -7448,6 +7454,7 @@ export namespace Prisma {
     dayTracked: Date
     createdAt: Date
     updatedAt: Date
+    taskName: string
     taskId: string
     authorId: string
     _count: TimeTrackedCountAggregateOutputType | null
@@ -7477,6 +7484,7 @@ export namespace Prisma {
     dayTracked?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    taskName?: boolean
     taskId?: boolean
     authorId?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
@@ -7489,6 +7497,7 @@ export namespace Prisma {
     dayTracked?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    taskName?: boolean
     taskId?: boolean
     authorId?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
@@ -7501,6 +7510,7 @@ export namespace Prisma {
     dayTracked?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    taskName?: boolean
     taskId?: boolean
     authorId?: boolean
     task?: boolean | TaskDefaultArgs<ExtArgs>
@@ -7513,11 +7523,12 @@ export namespace Prisma {
     dayTracked?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    taskName?: boolean
     taskId?: boolean
     authorId?: boolean
   }
 
-  export type TimeTrackedOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "duration" | "dayTracked" | "createdAt" | "updatedAt" | "taskId" | "authorId", ExtArgs["result"]["timeTracked"]>
+  export type TimeTrackedOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "duration" | "dayTracked" | "createdAt" | "updatedAt" | "taskName" | "taskId" | "authorId", ExtArgs["result"]["timeTracked"]>
   export type TimeTrackedInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     task?: boolean | TaskDefaultArgs<ExtArgs>
     author?: boolean | UserDefaultArgs<ExtArgs>
@@ -7543,6 +7554,7 @@ export namespace Prisma {
       dayTracked: Date
       createdAt: Date
       updatedAt: Date
+      taskName: string
       taskId: string
       authorId: string
     }, ExtArgs["result"]["timeTracked"]>
@@ -7975,6 +7987,7 @@ export namespace Prisma {
     readonly dayTracked: FieldRef<"TimeTracked", 'DateTime'>
     readonly createdAt: FieldRef<"TimeTracked", 'DateTime'>
     readonly updatedAt: FieldRef<"TimeTracked", 'DateTime'>
+    readonly taskName: FieldRef<"TimeTracked", 'String'>
     readonly taskId: FieldRef<"TimeTracked", 'String'>
     readonly authorId: FieldRef<"TimeTracked", 'String'>
   }
@@ -8485,6 +8498,7 @@ export namespace Prisma {
     dayTracked: 'dayTracked',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
+    taskName: 'taskName',
     taskId: 'taskId',
     authorId: 'authorId'
   };
@@ -9018,6 +9032,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFilter<"TimeTracked"> | Date | string
     createdAt?: DateTimeFilter<"TimeTracked"> | Date | string
     updatedAt?: DateTimeFilter<"TimeTracked"> | Date | string
+    taskName?: StringFilter<"TimeTracked"> | string
     taskId?: StringFilter<"TimeTracked"> | string
     authorId?: StringFilter<"TimeTracked"> | string
     task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
@@ -9030,6 +9045,7 @@ export namespace Prisma {
     dayTracked?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taskName?: SortOrder
     taskId?: SortOrder
     authorId?: SortOrder
     task?: TaskOrderByWithRelationInput
@@ -9045,6 +9061,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFilter<"TimeTracked"> | Date | string
     createdAt?: DateTimeFilter<"TimeTracked"> | Date | string
     updatedAt?: DateTimeFilter<"TimeTracked"> | Date | string
+    taskName?: StringFilter<"TimeTracked"> | string
     taskId?: StringFilter<"TimeTracked"> | string
     authorId?: StringFilter<"TimeTracked"> | string
     task?: XOR<TaskScalarRelationFilter, TaskWhereInput>
@@ -9057,6 +9074,7 @@ export namespace Prisma {
     dayTracked?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taskName?: SortOrder
     taskId?: SortOrder
     authorId?: SortOrder
     _count?: TimeTrackedCountOrderByAggregateInput
@@ -9075,6 +9093,7 @@ export namespace Prisma {
     dayTracked?: DateTimeWithAggregatesFilter<"TimeTracked"> | Date | string
     createdAt?: DateTimeWithAggregatesFilter<"TimeTracked"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"TimeTracked"> | Date | string
+    taskName?: StringWithAggregatesFilter<"TimeTracked"> | string
     taskId?: StringWithAggregatesFilter<"TimeTracked"> | string
     authorId?: StringWithAggregatesFilter<"TimeTracked"> | string
   }
@@ -9520,7 +9539,8 @@ export namespace Prisma {
     duration: number
     dayTracked: Date | string
     createdAt?: Date | string
-    updatedAt: Date | string
+    updatedAt?: Date | string
+    taskName: string
     task: TaskCreateNestedOneWithoutTimesTrackedInput
     author: UserCreateNestedOneWithoutTimeTracksInput
   }
@@ -9530,7 +9550,8 @@ export namespace Prisma {
     duration: number
     dayTracked: Date | string
     createdAt?: Date | string
-    updatedAt: Date | string
+    updatedAt?: Date | string
+    taskName: string
     taskId: string
     authorId: string
   }
@@ -9541,6 +9562,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskName?: StringFieldUpdateOperationsInput | string
     task?: TaskUpdateOneRequiredWithoutTimesTrackedNestedInput
     author?: UserUpdateOneRequiredWithoutTimeTracksNestedInput
   }
@@ -9551,6 +9573,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskName?: StringFieldUpdateOperationsInput | string
     taskId?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
   }
@@ -9560,7 +9583,8 @@ export namespace Prisma {
     duration: number
     dayTracked: Date | string
     createdAt?: Date | string
-    updatedAt: Date | string
+    updatedAt?: Date | string
+    taskName: string
     taskId: string
     authorId: string
   }
@@ -9571,6 +9595,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskName?: StringFieldUpdateOperationsInput | string
   }
 
   export type TimeTrackedUncheckedUpdateManyInput = {
@@ -9579,6 +9604,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskName?: StringFieldUpdateOperationsInput | string
     taskId?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
   }
@@ -10050,6 +10076,7 @@ export namespace Prisma {
     dayTracked?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taskName?: SortOrder
     taskId?: SortOrder
     authorId?: SortOrder
   }
@@ -10064,6 +10091,7 @@ export namespace Prisma {
     dayTracked?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taskName?: SortOrder
     taskId?: SortOrder
     authorId?: SortOrder
   }
@@ -10074,6 +10102,7 @@ export namespace Prisma {
     dayTracked?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    taskName?: SortOrder
     taskId?: SortOrder
     authorId?: SortOrder
   }
@@ -10952,7 +10981,8 @@ export namespace Prisma {
     duration: number
     dayTracked: Date | string
     createdAt?: Date | string
-    updatedAt: Date | string
+    updatedAt?: Date | string
+    taskName: string
     task: TaskCreateNestedOneWithoutTimesTrackedInput
   }
 
@@ -10961,7 +10991,8 @@ export namespace Prisma {
     duration: number
     dayTracked: Date | string
     createdAt?: Date | string
-    updatedAt: Date | string
+    updatedAt?: Date | string
+    taskName: string
     taskId: string
   }
 
@@ -11098,6 +11129,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFilter<"TimeTracked"> | Date | string
     createdAt?: DateTimeFilter<"TimeTracked"> | Date | string
     updatedAt?: DateTimeFilter<"TimeTracked"> | Date | string
+    taskName?: StringFilter<"TimeTracked"> | string
     taskId?: StringFilter<"TimeTracked"> | string
     authorId?: StringFilter<"TimeTracked"> | string
   }
@@ -11253,7 +11285,8 @@ export namespace Prisma {
     duration: number
     dayTracked: Date | string
     createdAt?: Date | string
-    updatedAt: Date | string
+    updatedAt?: Date | string
+    taskName: string
     author: UserCreateNestedOneWithoutTimeTracksInput
   }
 
@@ -11262,7 +11295,8 @@ export namespace Prisma {
     duration: number
     dayTracked: Date | string
     createdAt?: Date | string
-    updatedAt: Date | string
+    updatedAt?: Date | string
+    taskName: string
     authorId: string
   }
 
@@ -11707,7 +11741,8 @@ export namespace Prisma {
     duration: number
     dayTracked: Date | string
     createdAt?: Date | string
-    updatedAt: Date | string
+    updatedAt?: Date | string
+    taskName: string
     taskId: string
   }
 
@@ -11837,6 +11872,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskName?: StringFieldUpdateOperationsInput | string
     task?: TaskUpdateOneRequiredWithoutTimesTrackedNestedInput
   }
 
@@ -11846,6 +11882,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskName?: StringFieldUpdateOperationsInput | string
     taskId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -11855,6 +11892,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskName?: StringFieldUpdateOperationsInput | string
     taskId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -11927,7 +11965,8 @@ export namespace Prisma {
     duration: number
     dayTracked: Date | string
     createdAt?: Date | string
-    updatedAt: Date | string
+    updatedAt?: Date | string
+    taskName: string
     authorId: string
   }
 
@@ -11961,6 +12000,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskName?: StringFieldUpdateOperationsInput | string
     author?: UserUpdateOneRequiredWithoutTimeTracksNestedInput
   }
 
@@ -11970,6 +12010,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskName?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
   }
 
@@ -11979,6 +12020,7 @@ export namespace Prisma {
     dayTracked?: DateTimeFieldUpdateOperationsInput | Date | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    taskName?: StringFieldUpdateOperationsInput | string
     authorId?: StringFieldUpdateOperationsInput | string
   }
 

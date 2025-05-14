@@ -113,10 +113,11 @@ model TimeTracked {
   duration   Int
   dayTracked DateTime
   createdAt  DateTime @default(now())
-  updatedAt  DateTime
+  updatedAt  DateTime @updatedAt
 
-  taskId String
-  task   Task   @relation(fields: [taskId], references: [id])
+  taskName String
+  taskId   String
+  task     Task   @relation(fields: [taskId], references: [id])
 
   authorId String
   author   User   @relation(fields: [authorId], references: [id])

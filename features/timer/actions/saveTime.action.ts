@@ -4,10 +4,21 @@ import db from "@/lib/db";
 import { timerSubmitSchema } from "../schemas";
 import { getDate } from "@/utils";
 import getAuth from "@/lib/getAuth";
+import { getUserById } from "@/DAI/user";
+import { revalidatePath } from "next/cache";
 
 export const saveTime = async (_: unknown, data: unknown) => {
   const { id: userId } = await getAuth();
-  console.log(data, "save time data");
+
+  if (
+    typeof data !== "object" ||
+    data === null ||
+    !("pathname" in data) ||
+    typeof (data as { pathname: string }).pathname !== "string"
+  ) {
+    return { error: "Something went wrong!" };
+  }
+  const pathname = data.pathname as string;
 
   const parsed = timerSubmitSchema.safeParse(data);
 
@@ -20,6 +31,9 @@ export const saveTime = async (_: unknown, data: unknown) => {
 
   try {
     const { today, tomorrow } = getDate();
+
+    const user = await getUserById(userId);
+    if (!user) return { error: "User not found" };
 
     const task = await db.task.findUnique({ where: { id } });
 
@@ -49,6 +63,7 @@ export const saveTime = async (_: unknown, data: unknown) => {
           duration: timer,
           updatedAt: new Date(),
           authorId: userId,
+          taskName: task.name,
         },
       });
     } else {
@@ -67,6 +82,7 @@ export const saveTime = async (_: unknown, data: unknown) => {
       });
     }
 
+    revalidatePath(pathname);
     return { success: "Time saved successfully" };
   } catch (error) {
     console.log(error, "Save time");
